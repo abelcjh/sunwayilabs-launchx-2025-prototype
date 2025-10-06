@@ -527,7 +527,7 @@ python -m audit.policy --register-model "openai" "gpt-4o-mini" '{"temperature": 
 
 ## 🗺️ Future Roadmap
 
-### Phase 1: ZKML Proofs (Q2 2024)
+### Phase 1: ZKML Proofs (2026)
 
 **Zero-Knowledge Machine Learning**:
 - **Privacy-Preserving Inference**: Prove AI responses without revealing inputs
@@ -552,7 +552,7 @@ def verify_zkml_proof(proof, public_inputs):
     return zkml_verifier.verify(proof, public_inputs)
 ```
 
-### Phase 2: ILMU Integration (Q3 2024)
+### Phase 2: ILMU Integration (2026)
 
 **Malaysian AI Model Integration**:
 - **Local Language Support**: Enhanced Bahasa Malaysia capabilities
@@ -578,7 +578,7 @@ class ILMUProvider(ModelProvider):
         return response.text
 ```
 
-### Phase 3: Clinician Review Portal (Q4 2024)
+### Phase 3: Clinician Review Portal (2026)
 
 **Professional Oversight System**:
 - **Clinician Dashboard**: Real-time conversation monitoring
@@ -607,7 +607,7 @@ class ClinicianPortal:
         return self.analytics.generate_report(time_period)
 ```
 
-### Phase 4: Advanced Features (2025)
+### Phase 4: Advanced Features (2026)
 
 **Enhanced AI Capabilities**:
 - **Multi-modal Support**: Voice, text, and image input
@@ -660,10 +660,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Documentation**: [Wiki](https://github.com/your-username/sunwayilabs-launchx-2025-prototype/wiki)
-- **Issues**: [GitHub Issues](https://github.com/your-username/sunwayilabs-launchx-2025-prototype/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/sunwayilabs-launchx-2025-prototype/discussions)
-- **Email**: support@eve-mental-health.com
+- **Documentation**: [Wiki](https://github.com/abelcjh/sunwayilabs-launchx-2025-prototype/wiki)
+- **Issues**: [GitHub Issues](https://github.com/abelcjh/sunwayilabs-launchx-2025-prototype/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/abelcjh/sunwayilabs-launchx-2025-prototype/discussions)
 
 ---
 
