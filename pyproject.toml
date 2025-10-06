@@ -1,0 +1,172 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eve-mental-health-ai"
+version = "1.0.0"
+description = "Privacy-first mental health AI companion with blockchain transparency"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Sunway University", email = "launchx@sunway.edu.my"},
+]
+keywords = ["mental-health", "ai", "blockchain", "privacy", "therapy"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+
+dependencies = [
+    "streamlit>=1.36.0",
+    "openai>=1.30.0",
+    "python-dotenv>=1.0.1",
+    "transformers>=4.43.0",
+    "torch>=2.2.0",
+    "sentencepiece>=0.2.0",
+    "langdetect>=1.0.9",
+    "web3>=6.0.0",
+    "cryptography>=41.0.0",
+    "boto3>=1.26.0",
+    "requests>=2.31.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "flake8>=6.0.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.0.0",
+    "bandit>=1.7.0",
+    "safety>=2.0.0",
+    "semgrep>=1.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/sunwayilabs/eve-mental-health-ai"
+Repository = "https://github.com/sunwayilabs/eve-mental-health-ai"
+Documentation = "https://github.com/sunwayilabs/eve-mental-health-ai/wiki"
+"Bug Tracker" = "https://github.com/sunwayilabs/eve-mental-health-ai/issues"
+
+[project.scripts]
+eve-setup = "scripts.setup_environment:main"
+eve-deploy-hf = "scripts.deploy_to_hf:deploy_to_huggingface"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*", "audit*", "privacy*", "scripts*"]
+
+[tool.black]
+line-length = 88
+target-version = ['py38', 'py39', 'py310', 'py311']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 88
+known_first_party = ["app", "audit", "privacy", "scripts"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = [
+    "streamlit.*",
+    "openai.*",
+    "transformers.*",
+    "torch.*",
+    "web3.*",
+    "boto3.*",
+    "langdetect.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=app",
+    "--cov=audit", 
+    "--cov=privacy",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+
+[tool.coverage.run]
+source = ["app", "audit", "privacy"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/__pycache__/*",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "venv", ".venv"]
+skips = ["B101", "B601"]
+
+[tool.semgrep]
+config = "auto"

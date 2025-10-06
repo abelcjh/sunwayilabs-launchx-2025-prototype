@@ -1,0 +1,40 @@
+name: Deploy to Hugging Face Spaces
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.9'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install huggingface_hub
+        
+    - name: Deploy to Hugging Face Spaces
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      run: |
+        python scripts/deploy_to_hf.py
+        
+    - name: Notify deployment
+      if: success()
+      run: |
+        echo "✅ Successfully deployed to Hugging Face Spaces"
+        echo "🔗 https://huggingface.co/spaces/sunwayilabs/eve-mental-health-ai"

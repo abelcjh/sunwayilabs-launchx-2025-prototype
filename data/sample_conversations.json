@@ -1,0 +1,14 @@
+{
+  "samples": [
+    {
+      "lang": "en",
+      "user": "I feel overwhelmed by expectations.",
+      "eve": "It sounds like the expectations on you feel really heavy. Would you like to share which moments feel the most overwhelming?"
+    },
+    {
+      "lang": "ms",
+      "user": "Saya rasa tertekan sejak kebelakangan ini.",
+      "eve": "Kedengaran seperti anda sedang menanggung banyak tekanan. Mahu ceritakan apa yang membuatkannya terasa berat?"
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 2 * * 1'  # Weekly on Monday at 2 AM
+
+jobs:
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Full history for better analysis
+        
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install bandit safety semgrep pip-audit
+        
+    - name: Run Bandit security scan
+      run: |
+        bandit -r app/ audit/ privacy/ -f json -o bandit-report.json || true
+        bandit -r app/ audit/ privacy/ -f txt -o bandit-report.txt || true
+        
+    - name: Run Safety check
+      run: |
+        safety check --json --output safety-report.json || true
+        safety check --output safety-report.txt || true
+        
+    - name: Run Semgrep security scan
+      run: |
+        semgrep --config=auto app/ audit/ privacy/ --json --output=semgrep-report.json || true
+        semgrep --config=auto app/ audit/ privacy/ --output=semgrep-report.txt || true
+        
+    - name: Run pip-audit
+      run: |
+        pip-audit --format=json --output=pip-audit-report.json || true
+        pip-audit --format=text --output=pip-audit-report.txt || true
+        
+    - name: Upload security reports
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-reports
+        path: |
+          bandit-report.json
+          bandit-report.txt
+          safety-report.json
+          safety-report.txt
+          semgrep-report.json
+          semgrep-report.txt
+          pip-audit-report.json
+          pip-audit-report.txt
+        
+    - name: Comment PR with security results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v6
+      with:
+        script: |
+          const fs = require('fs');
+          
+          let comment = '## 🔒 Security Scan Results\n\n';
+          
+          // Bandit results
+          if (fs.existsSync('bandit-report.txt')) {
+            const banditContent = fs.readFileSync('bandit-report.txt', 'utf8');
+            comment += '### Bandit Security Scan\n';
+            comment += '```\n' + banditContent + '\n```\n\n';
+          }
+          
+          // Safety results
+          if (fs.existsSync('safety-report.txt')) {
+            const safetyContent = fs.readFileSync('safety-report.txt', 'utf8');
+            comment += '### Safety Dependency Check\n';
+            comment += '```\n' + safetyContent + '\n```\n\n';
+          }
+          
+          // Semgrep results
+          if (fs.existsSync('semgrep-report.txt')) {
+            const semgrepContent = fs.readFileSync('semgrep-report.txt', 'utf8');
+            comment += '### Semgrep Security Analysis\n';
+            comment += '```\n' + semgrepContent + '\n```\n\n';
+          }
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+  dependency-review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Dependency Review
+      uses: actions/dependency-review-action@v3
+      with:
+        fail-on-severity: moderate
+        allow-licenses: MIT, Apache-2.0, BSD-3-Clause, BSD-2-Clause, ISC, GPL-2.0, GPL-3.0
+        deny-licenses: GPL-1.0, AGPL-3.0
